@@ -1,7 +1,9 @@
 package com.jph.java.advanced;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class ReflectionTest {
 	public static void main(String args[]) throws Exception {
@@ -11,7 +13,41 @@ public class ReflectionTest {
 		//通过反射获取类的实例
 //		test2();
 		//获取和修改类中的属性
-		test3();
+//		test3();
+		//获取并调用类中的方法 
+//		test4();
+		//通过反射动态创建和访问数组  
+		test5();
+	}
+
+	/**
+	 * 通过反射动态创建和访问数组  
+	 */
+	private static void test5() throws Exception{
+		Class<?>componentType=Class.forName("java.lang.String");
+		Object array=Array.newInstance(componentType, 10);
+		Array.set(array, 5, "通过反射动态创建和访问数组 ");
+		System.out.println(Array.get(array, 5));
+	}
+
+	/**
+	 * 获取并调用类中的方法 
+	 */
+	private static void test4() throws Exception{
+		System.out.println("调用非静态的方法");
+		Person person=new Person();
+		Class<?>cls=person.getClass();
+		Method method=cls.getMethod("setAge", new Class[]{int.class});
+		method.invoke(person, 18);
+		Method method2=cls.getMethod("getAge", new Class[]{});
+		Object object=method2.invoke(person, new Object[0]);
+		System.out.println(object.toString());
+		
+		System.out.println("调用静态的方法");
+		Class<?> cls2=Class.forName("java.lang.String");
+		Method method3=cls2.getMethod("valueOf", new Class[]{long.class});
+		Object object2=method3.invoke(null, 123);
+		System.out.println(object2.toString());
 	}
 
 	/**
