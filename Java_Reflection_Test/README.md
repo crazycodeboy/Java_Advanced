@@ -125,7 +125,8 @@ field.set(person,18);
 System.out.println(field.toString());
 ```  
 **获取类的所有字段**
-- 获取该类以及继承的所有公有字段    
+- 获取该类以及继承的所有公有字段  
+    
 ```java
 System.out.println("获取该类以及继承的所有公有字段");
 Field[]fields=cls.getFields();
@@ -133,7 +134,8 @@ for (int i = 0; i < fields.length; i++) {
 	System.out.println("总共："+fields.length+"当前第"+(i+1)+"个 "+fields[i].toString());
 }
 ```  
-- 获取该类的所有字段      
+- 获取该类的所有字段  
+
 ```java
 System.out.println("获取该类的所有字段");  
 Field[]fields2=cls.getDeclaredFields();
