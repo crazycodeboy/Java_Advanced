@@ -153,7 +153,7 @@ field.setAccessible(true);
 field.set(person,18);
 System.out.println(field.get(person));
 ```  
-需要指出的是如果字段是非public的，需要在访问该字段前取消该字段的访问权限控制`field.setAccessible(true)`，那么对于一个final字段是否可以通过反射修改它的值呢，答案是肯定的，前提同样是在访问该字段前取消该字段的访问权限控制。但如果该字段既被final修饰又被static修饰，那么是无法修改的。
+需要指出的是如果字段是非public的，需要在访问该字段前取消该字段的访问权限控制`field.setAccessible(true)`，那么对于一个final字段是否可以通过反射修改它的值呢，答案是肯定的，前提同样是在访问该字段前取消该字段的访问权限控制。但如果该字段既被final修饰又被static修饰，那么是无法修改的。   
 **修改静态字段**  
 和修改非静态字段相比，修改类的静态字段就要轻松的多了，因为静态字段属于类所有，所以在修改静态字段的时候就不需要再传递一个该类的对象了。  
 ```java
