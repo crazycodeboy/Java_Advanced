@@ -11,11 +11,11 @@
 
 
 
-##概述
+###概述
 Java的反射机制是Java语言动态性的一种体现。反射机制是通过反射API来实现的，它允许程序在运行过程中取得任何一个已知名称的类的内部信息，包括其中的构造方法、声明的字段和定义的方法等。这不得不说是一个很强大的能力。   
 正如英文单词reflection的含义一样，使用反射API的时候就好像在看一个Java类在水中的倒影一样。知道了Java类的内部结构之后，就可以与它进行交互，包括创建新的对象和调用对象中的方法等。这种交互方式与直接在源代码中使用的效果是相同的，但是又额外提供了运行时刻的灵活性。使用反射的一个最大的弊端是性能比较差。相同的操作，用反射API所需的时间大概比直接的使用要慢一两到三个数量级。不过现在的JVM实现中，反射操作的性能已经有了很大的提升。
   
-##基本用法
+###基本用法
 说到反射的用法不得不提java.lang.Class类，通过该类的对象就的方法可以获取到该类中的构造方法、域和方法。对应的方法分别是**getConstructor**、**getField**和**getMethod**。这三个方法还有相应的**getDeclaredXXX**版本，区别在于**getDeclaredXXX**版本的方法会获取该类自身所声明的所有字段包括public, protected, default (package), 和 private，但不会获取继承下来的字段。     
 Java反射API位于java.lang.reflect包中。主要包括以下几类：  
 **Constructor类**：用来描述一个类的构造方法。  
@@ -24,7 +24,7 @@ Java反射API位于java.lang.reflect包中。主要包括以下几类：
 **Modifer类**：用来描述类内各元素的修饰符。  
 **Array**：用来对数组进行操作。      
 Constructor、Field和Method这三个类分别表示类中的构造方法、字段和方法。  
-##获取类的构造方法
+###获取类的构造方法
 java.lang.Class提供了4种获取类构造方法的反射调用：
 - `Constructor getConstructor(Class[] params)` -获得使用特殊的参数类型的公共构造函数
 - `Constructor[] getConstructors()` -获得类的所有公共构造函数
@@ -86,7 +86,7 @@ Constructor<?>defaultConstructor=Person.class.getConstructor();
 defaultConstructor.newInstance();
 System.out.println(cls.toString()); 
 ```
-##通过反射获取类的实例  
+###通过反射获取类的实例  
 上文中已经通过反射获取到类的构造方法也就是Constructor对象。Constructor对象提供了`public T newInstance(Object ... initargs)`方法，该方法返回类的实例，其中initargs作为调用类的构造方法的参数数组，反射API会根据数组中元素的类型和个数选择调用类的相应构造方法。
 ```java
 Class<?>[]parameterTypes2=new Class[]{char[].class,boolean.class};
@@ -99,7 +99,7 @@ Object object=constructor2.newInstance(chars,false);
 System.out.println(object.toString());
 ```  
 上面代码中`constructor2.setAccessible(true)`的意思是告诉虚拟机，当调用该构造方法时，不用进行访问权限的控制，也就是给反射开个绿灯。相应地Method，Field以及Constructor类都直接或间接的继承了AccessibleObject类，该类提供了将反射的对象标记为在使用时取消默认 Java 语言访问控制检查的能力。所以说在使用Method，Field以及Constructor类的对象时，如果该对象所表示的方法或字段是非public的，那么在访问它之前需要调用` public void setAccessible(boolean flag)`方法将该对象的访问控制权限取消，否则java的异常处理机制会告诉你` can not access a member of class`。  
-##通过反射获取和修改类中的字段
+###通过反射获取和修改类中的字段
 和获取类的构造方法相似的是Class类同样也提供了获取类中字段的4种调用：  
 `Field getField(String name)` -- 获得命名的公共字段  
 `Field[] getFields() `-- 获得类的所有公共字段  
