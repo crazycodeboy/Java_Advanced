@@ -166,3 +166,43 @@ field2.setAccessible(true);
 field2.set(null, 180);
 System.out.println(field2.get(null));
 ```
+###通过反射获取并调用类中的方法  
+Class类提供了以下4种方式来获取类中的方法：  
+`Method getMethod(String name, Class[] params)` -- 使用特定的参数类型，获得命名的公共方法  
+`Method[] getMethods()` -- 获得类的所有公共方法  
+`Method getDeclaredMethod(String name, Class[] params)` -- 使用特写的参数类型，获得类声明的命名的方法  
+`Method[] getDeclaredMethods()` -- 获得类声明的所有方法  
+与获取类中字段类似，前两个方法用于获取类中以及继承的所有公共方法 。后两个方法用于获取当前类中（不包含继承）所有的方法。以上4种方法返回的是Method对象，Method类中提供了`public Object invoke(Object obj, Object... args)`通过该方法我们可以调用任何一个类的任何一个方法。invoke 方法使用两个参数，为调用提供类实例和参数值数组。  
+####调用非静态的方法
+```java
+Person person=new Person();
+Class<?>cls=person.getClass();
+Method method=cls.getMethod("setAge", new Class[]{int.class});
+method.invoke(person, 18);
+Method method2=cls.getMethod("getAge", new Class[]{});
+Object object=method2.invoke(person, new Object[0]);
+System.out.println(object.toString());
+```  
+####调用静态方法
+```java
+System.out.println("调用静态的方法");
+Class<?> cls2=Class.forName("java.lang.String");
+Method method3=cls2.getMethod("valueOf", new Class[]{long.class});
+Object object2=method3.invoke(null, 123);
+System.out.println(object2.toString());
+```  
+非静态方法属于类方法，所以调用的时候可以将invoke的第一参数省去。  
+###通过反射动态创建和访问数组  
+java.lang.reflect.Array 类提供的静态方法的集合。该类中的方法使您能够创建新数组，获得数组对象的长度，读和写数组对象的索引值。 
+```java
+Class<?>componentType=Class.forName("java.lang.String");
+Object array=Array.newInstance(componentType, 10);
+Array.set(array, 5, "通过反射动态创建和访问数组 ");
+System.out.println(Array.get(array, 5));
+```   
+上述代码中`Array.newInstance(componentType, 10);`表示创建一个componentType类型大小为10的数组。`Array.set(array, 5, "通过反射动态创建和访问数组 ");`表示将数组第6个元素修改为"通过反射动态创建和访问数组 "，`Array.get(array, 5)`表示访问数组中第6个元素的值。  
+###反射的应用  
+
+####反射在orm框架上的使用   
+  
+####Java反射与动态代理
