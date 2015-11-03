@@ -144,7 +144,8 @@ for (int i = 0; i < fields2.length; i++) {
         
 ####2.修改字段
 **修非静态字段**  
-非静态字段和方法属于类的对象所有，所以要修改类的非静态字段需要一个该类的对象。    
+非静态字段和方法属于类的对象所有，所以要修改类的非静态字段需要一个该类的对象。  
+    
 ```java
 Person person=new Person();
 Class<?>cls=person.getClass();
