@@ -1,6 +1,7 @@
 package com.jph.java.advanced;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 
 public class ReflectionTest {
 	public static void main(String args[]) throws Exception {
@@ -9,6 +10,40 @@ public class ReflectionTest {
 //		test1();
 		//通过反射获取类的实例
 //		test2();
+		//获取和修改类中的属性
+		test3();
+	}
+
+	/**
+	 *获取和修改类中的属性 
+	 */
+	private static void test3() throws Exception{
+		Person person=new Person();
+		Class<?>cls=person.getClass();
+		Field field=cls.getDeclaredField("age");
+		field.setAccessible(true);
+		field.set(person,18);
+		System.out.println(field.get(person));
+		
+		System.out.println("修改类的静态字段");
+		Field field2=cls.getDeclaredField("height");
+		field2.setAccessible(true);
+		field2.set(null, 180);
+		System.out.println(field2.get(null));
+		
+		
+		System.out.println("获取该类以及继承的所有公有属性");
+		Field[]fields=cls.getFields();
+		for (int i = 0; i < fields.length; i++) {
+			System.out.println("总共："+fields.length+"当前第"+(i+1)+"个 "+fields[i].toString());
+		}
+		
+		System.out.println("获取该类的所有属性");
+		Field[]fields2=cls.getDeclaredFields();
+		for (int i = 0; i < fields2.length; i++) {
+			System.out.println("总共："+fields2.length+"当前第"+(i+1)+"个 "+fields2[i].toString());
+		}
+		
 	}
 
 	/**
