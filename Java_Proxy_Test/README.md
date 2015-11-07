@@ -10,10 +10,14 @@
   
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Proxy_pattern_diagram.svg/400px-Proxy_pattern_diagram.svg.png)  
 在代理模式中真实主题角色对于客户端角色来说的透明的，也就是客户端不知道也无需知道真实主题的存在。
-为了保持行为的一致性，代理类和委托类通常会实现相同的接口，所以在访问者看来两者没有丝毫的区别。通过代理类这中间一层，能有效控制对委托类对象的直接访问，也可以很好地隐藏和保护委托类对象，同时也为实施不同控制策略预留了空间，从而在设计上获得了更大的灵活性。  
+为了保持行为的一致性，代理类和委托类通常会实现相同的接口，所以在访问者看来两者没有丝毫的区别。通过代理类这中间一层，能有效控制对委托类对象的直接访问，也可以很好地隐藏和保护委托类对象，同时也为实施不同控制策略预留了空间，从而在设计上获得了更大的灵活性。   
+####代理的优点  
+- 隐藏委托类的实现，调用者只需要和代理类进行交互即可。
+- 解耦，在不改变委托类代码情况下做一些额外处理，比如添加初始判断及其他公共操作   
+
 #####代理模式的应用场景  
 代理的使用场景很多，struts2中的 action 调用， hibernate的懒加载， spring的 AOP无一不用到代理。总结起来可分为以下几类：
-1. 在原方法执行之前和之后做一些操作，可以用代理来实现（比如记录Log）。
+1. 在原方法执行之前和之后做一些操作，可以用代理来实现（比如记录Log，做事务控制等）。
 2. 封装真实的主题类，将真实的业务逻辑隐藏，只暴露给调用者公共的主题接口。
 3. 在延迟加载上的应用。  
 
@@ -75,7 +79,7 @@ public class Agents implements Sales {
 }
 
 ```  
-为了帮房主出售房屋，Agents代理也实现了Sales接口。同时Agents也拥有Owner的成员对象，在实现的sell()接口方法里，代理Agents帮房主Owner预处理了一些消息，然后调用了owner对象的sell()方法通知房主出售房屋，在房主Owner出售完房屋后，代理Agents开始收取中介费。有心的读者可以发现，代理Agents在访问Owner对象的时候使用了getOwner()方法，从而达到了在客户真正决定买房的时候才初始化owner对象，而不是在Agents初始化的时候就将Owner初始化。真实情境中，会有很多购房者要看房，但真正买的人只有一个，所以在代理Agents帮房东预处理和过滤掉所有信息之后，告诉房东你可以出售房屋了，这样大大节省了房东的时间和简化了售房的繁琐过程。而这也是用代理来实现延迟加载的好处。
+为了帮房主出售房屋，Agents代理也实现了Sales接口。同时Agents也拥有Owner的成员对象，在实现的sell()接口方法里，代理Agents帮房主Owner预处理了一些消息，然后调用了owner对象的sell()方法通知房主出售房屋，在房主Owner出售完房屋后，代理Agents开始收取中介费。有心的读者可以发现，代理Agents在访问Owner对象的时候使用了getOwner()方法，从而达到了在客户真正决定买房的时候才初始化owner对象，而不是在Agents初始化的时候就将Owner初始化。真实情境中，会有很多购房者要看房，但真正买的人只有一个，所以在代理Agents帮房东预处理和过滤掉所有信息之后，告诉房东你可以出售房屋了，这样大大节省了房东的时间和简化了售房的繁琐过程。而这也是用代理来实现延迟加载的好处。   
 **最后，万事俱备只欠买房的顾客了（Customer）**  
 ```java 
 /**
@@ -90,11 +94,158 @@ public class Customer {
 	}
 }
 ```  
-在这里买房的顾客Customer找到房产代理Agents，告诉他要买房。整个过程房东Owner对顾客Customer来说是透明的，Customer只与Agents打交道，Owner也只与Agents打交道，Agents作为Owner和Customer通信的桥梁从而有效控制了Customer和Owner的直接交流。  
+在这里买房的顾客Customer找到房产代理Agents，告诉他要买房。整个过程房东Owner对顾客Customer来说是透明的，Customer只与Agents打交道，Owner也只与Agents打交道，Agents作为Owner和Customer通信的桥梁从而有效控制了Customer和Owner的直接交流。   
+观察代码可以发现每一个代理类只能为一个接口服务，这样一来程序开发中必然会产生过多的代理，而且，所有的代理操作除了调用的方法不一样之外，其他的操作都一样，则此时肯定是重复代码。解决这一问题最好的做法是可以通过一个代理类完成全部的代理功能，那么此时就必须使用动态代理完成。  
+  
 ####静态代理类优缺点  
 优点：业务类只需要关注业务逻辑本身，保证了业务类的重用性。这是代理的共有优点。  
 缺点：  
 1）代理对象的一个接口只服务于一种类型的对象，如果要代理的方法很多，势必要为每一种方法都进行代理，静态代理在程序规模稍大时就无法胜任了。    
 2）如果接口增加一个方法，除了所有实现类需要实现这个方法外，所有代理类也需要实现此方法。增加了代码维护的复杂度。   
 另外，如果要按照上述的方法使用代理模式，那么真实角色(委托类)必须是事先已经存在的，并将其作为代理对象的内部属性。但是实际使用时，一个真实角色必须对应一个代理角色，如果大量使用会导致类的急剧膨胀；此外，如果事先并不知道真实角色（委托类），该如何使用代理呢？这个问题可以通过Java的动态代理类来解决。  
-###动态代理
+###动态代理    
+在java的动态代理API中，有两个重要的类和接口，一个是 InvocationHandler(Interface)、另一个则是 Proxy(Class)，这一个类和接口是实现我们动态代理所必须用到的。  
+####InvocationHandler(Interface)
+InvocationHandler是负责连接代理类和委托类的中间类必须实现的接口，它自定义了一个 invoke 方法，用于集中处理在动态代理类对象上的方法调用，通常在该方法中实现对委托类的代理访问。    
+**InvocationHandler 的核心方法**  
+    Object invoke(Object proxy, Method method, Object[] args)    
+- proxy 该参数为代理类的实例  
+- method  被调用的方法对象  
+- args 调用method对象的方法参数  
+ 
+该方法也是InvocationHandler接口所定义的唯一的一个方法，该方法负责集中处理动态代理类上的所有方法的调用。调用处理器根据这三个参数进行预处理或分派到委托类实例上执行。  
+#####Proxy(Class)  
+Proxy是 Java 动态代理机制的主类，它提供了一组静态方法来为一组接口动态地生成代理类及其对象。
+**Proxy 的静态方法**  
+	static InvocationHandler getInvocationHandler(Object proxy)    
+该方法用于获取指定代理对象所关联的调用处理器  
+    static Class getProxyClass(ClassLoader loader, Class[] interfaces)   
+该方法用于获取关联于指定类装载器和一组接口的动态代理类的类对象  
+	static boolean isProxyClass(Class cl)   
+该方法用于判断指定类对象是否是一个动态代理类 
+	static Object newProxyInstance(ClassLoader loader, Class[] interfaces,InvocationHandler h)    
+- loader  指定代理类的ClassLoader加载器
+- interfaces  指定代理类要实现的接口
+- h:  表示的是当我这个动态代理对象在调用方法的时候，会关联到哪一个InvocationHandler对象上  
+
+该方法用于为指定类装载器、一组接口及调用处理器生成动态代理类实例   
+
+####使用Java 动态代理的两个重要步骤
+1. 通过实现 InvocationHandler 接口创建自己的调用处理器；  
+1. 通过为Proxy类的newProxyInstance方法指定代理类的ClassLoader 对象和代理要实现的interface以及调用处理器InvocationHandler对象 来创建动态代理类的对象；  
+
+####下面通过实例来具体介绍动态代理的使用  
+我们还是使用上面房东出售房屋的例子，来用动态代理去实现。  
+委托类(Owner)和公共代理接口(Sales)和静态代理的例子中的一样。  
+#####实现 InvocationHandler 接口  
+```java 
+/**
+ * 动态代理类对应的调用处理程序类 
+ * @author Penn
+ */
+public class SalesInvocationHandler implements InvocationHandler{
+	 //代理类持有一个委托类的对象引用  
+	 private Object delegate;
+	public SalesInvocationHandler(Object delegate) {
+		this.delegate = delegate;
+	}
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args)
+			throws Throwable {
+		System.out.println("Enter method "+method.getName());
+		long start=System.currentTimeMillis();
+		
+		Object result=method.invoke(delegate, args);
+		
+		long end=System.currentTimeMillis();
+		System.out.println("Exit method "+method.getName());
+		System.out.println("执行时间："+(end-start));
+		
+		return result;
+	}  
+}  
+```    
+SalesInvocationHandler实现了InvocationHandler的invoke方法，当代理对象的方法被调用时，invoke方法会被回调。其中proxy表示实现了公共代理方法的动态代理对象。  
+#####通过 Proxy 类静态函数生成代理对象  
+```java
+/**
+ * 客户端，使用代理类和主题接口完成一些工作。<br>
+ * 在这里表示买房子的客户
+ * @author Penn
+ */
+public class Customer {
+	public static void main(String[]args) {
+		Sales delegate=new Owner();
+		InvocationHandler handler=new SalesInvocationHandler(delegate);
+		Sales proxy=(Sales)Proxy.newProxyInstance(delegate.getClass().getClassLoader(), delegate.getClass().getInterfaces(), handler);
+		proxy.sell();
+	}
+}
+```  
+上面代码通过`InvocationHandler handler=new SalesInvocationHandler(delegate);`将委托对象作为构造方法的参数传递给了SalesInvocationHandler来作为代理方法调用的对象。当我们调用代理对象的sell()方法时，该调用将会被转发到SalesInvocationHandler对象的invoke上，从而达到动态代理的效果。从上面代码可以看出，客户端需要负责自己创建代理对象，显得有点繁琐，其实我们可以将代理对象的创建封装到代理协调器的实现中。  
+#####改进后的代理协调器  
+```java 
+/**
+ * 动态代理类对应的调用处理程序类 
+ * @author Penn
+ */
+public class SalesInvocationHandler implements InvocationHandler{
+	 //代理类持有一个委托类的对象引用  
+	 private Object delegate;
+	/**
+	 * 绑定委托对象并返回一个代理类 
+	 * @param delegate
+	 * @return
+	 */
+	public Object bind(Object delegate) {
+		this.delegate = delegate;
+		return Proxy.newProxyInstance(delegate.getClass().getClassLoader(), delegate.getClass().getInterfaces(), this);
+	}
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args)
+			throws Throwable {
+		System.out.println(proxy.getClass().getInterfaces()[0]);
+		System.out.println("Enter method "+method.getName());
+		long start=System.currentTimeMillis();
+		
+		Object result=method.invoke(delegate, args);
+		
+		long end=System.currentTimeMillis();
+		System.out.println("Exit method "+method.getName());
+		System.out.println("执行时间："+(end-start));
+		
+		return result;
+	}  
+}
+```  
+#####这样客户端就简化成了  
+```java
+ /**
+ * 客户端，使用代理类和主题接口完成一些工作。<br>
+ * 在这里表示买房子的客户
+ * @author Penn
+ */
+public class Customer {
+	public static void main(String[]args) {
+		Sales delegate=new Owner();
+		Sales proxy=(Sales) new SalesInvocationHandler().bind(delegate);
+		proxy.sell();
+	}
+} 
+```
+#####执行结果  
+``` 
+Enter method sell
+我是房东我正在出售我的房产
+Exit method sell
+执行时间：0  
+```  
+####动态代理类优缺点  
+**优点**
+1.动态代理类的字节码在程序运行时由Java反射机制动态生成，无需程序员手工编写它的源代码。  
+2.动态代理类不仅简化了编程工作，而且提高了软件系统的可扩展性，因为Java 反射机制可以生成任意类型的动态代理类。
+
+**缺点**  
+JDK的动态代理机制只能代理实现了接口的类，而不能实现接口的类就不能实现JDK的动态代理，cglib是针对类来实现代理的，他的原理是对指定的目标类生成一个子类，并覆盖其中方法实现增强，但因为采用的是继承，所以不能对final修饰的类进行代理。 
+
+
