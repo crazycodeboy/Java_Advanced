@@ -3,4 +3,4 @@
 ###[Java反射研究和实践](https://git.oschina.net/crazycodeboy/Java_Advanced/tree/master/Java_Reflection_Test/ "Java反射研究和实践")
 
 
-##2. Java代理和动态代理机制分析和应用
+### [Java代理和动态代理机制分析和应用](https://git.oschina.net/crazycodeboy/Java_Advanced/tree/master/Java_Proxy_Test/ "Java代理和动态代理机制分析和应用")

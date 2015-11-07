@@ -1,4 +1,4 @@
-# Java代理和动态代理机制分析和应用 #  
+# Java代理和动态代理机制分析和应用    
 ###概述  
 代理是一种常用的设计模式，其目的就是为其他对象提供一个代理以控制对某个对象的访问。代理类负责为委托类预处理消息，过滤消息并转发消息，以及进行消息被委托类执行后的后续处理。根据代理类的生成时间不同可以将代理分为静态代理和动态代理两种。
 
@@ -16,13 +16,13 @@
 - 解耦，在不改变委托类代码情况下做一些额外处理，比如添加初始判断及其他公共操作   
 
 #####代理模式的应用场景  
-代理的使用场景很多，struts2中的 action 调用， hibernate的懒加载， spring的 AOP无一不用到代理。总结起来可分为以下几类：
-1. 在原方法执行之前和之后做一些操作，可以用代理来实现（比如记录Log，做事务控制等）。
-2. 封装真实的主题类，将真实的业务逻辑隐藏，只暴露给调用者公共的主题接口。
-3. 在延迟加载上的应用。  
+代理的使用场景很多，struts2中的 action 调用， hibernate的懒加载， spring的 AOP无一不用到代理。总结起来可分为以下几类：   
+1. 在原方法执行之前和之后做一些操作，可以用代理来实现（比如记录Log，做事务控制等）。   
+2. 封装真实的主题类，将真实的业务逻辑隐藏，只暴露给调用者公共的主题接口。   
+3. 在延迟加载上的应用。    
 
 ###静态代理  
-所谓静态代理也就是在程序运行前就已经存在代理类的字节码文件，代理类和委托类的关系在运行前就确定了。 
+所谓静态代理也就是在程序运行前就已经存在代理类的字节码文件，代理类和委托类的关系在运行前就确定了。    
 下面有个场景，一个房主要出售自己的房子，但房主不知道谁要买房，也没有时间去接待每一个看房者。  
 现在我们就用静态代理的方式来实现房主的这一需求。  
 **首先，将出售房屋抽象成公共代理接口(Sales)** 
@@ -117,13 +117,13 @@ InvocationHandler是负责连接代理类和委托类的中间类必须实现的
 #####Proxy(Class)  
 Proxy是 Java 动态代理机制的主类，它提供了一组静态方法来为一组接口动态地生成代理类及其对象。
 **Proxy 的静态方法**  
-	static InvocationHandler getInvocationHandler(Object proxy)    
+`static InvocationHandler getInvocationHandler(Object proxy)`    
 该方法用于获取指定代理对象所关联的调用处理器  
-    static Class getProxyClass(ClassLoader loader, Class[] interfaces)   
+`static Class getProxyClass(ClassLoader loader, Class[] interfaces)`   
 该方法用于获取关联于指定类装载器和一组接口的动态代理类的类对象  
-	static boolean isProxyClass(Class cl)   
+`static boolean isProxyClass(Class cl) `  
 该方法用于判断指定类对象是否是一个动态代理类 
-	static Object newProxyInstance(ClassLoader loader, Class[] interfaces,InvocationHandler h)    
+`static Object newProxyInstance(ClassLoader loader, Class[] interfaces,InvocationHandler h)`    
 - loader  指定代理类的ClassLoader加载器
 - interfaces  指定代理类要实现的接口
 - h:  表示的是当我这个动态代理对象在调用方法的时候，会关联到哪一个InvocationHandler对象上  
