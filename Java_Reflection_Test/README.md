@@ -192,8 +192,9 @@ System.out.println(Array.get(array, 5));
 上述代码中`Array.newInstance(componentType, 10);`表示创建一个componentType类型大小为10的数组。`Array.set(array, 5, "通过反射动态创建和访问数组 ");`表示将数组第6个元素修改为"通过反射动态创建和访问数组 "，`Array.get(array, 5)`表示访问数组中第6个元素的值。  
 ###反射的应用   
   
-####Java反射与动态代理  
-待续...
+####Java反射与动态代理     
+[Java反射与动态代理](https://github.com/crazycodeboy/Java_Advanced/tree/master/Java_Proxy_Test "Java反射与动态代理")
+
 ####反射在orm框架上的使用  
 待续...
 
